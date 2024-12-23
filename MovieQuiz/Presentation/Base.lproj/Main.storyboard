@@ -79,7 +79,7 @@
                                                         <fragment content="Нет">
                                                             <attributes>
                                                                 <color key="NSColor" name="YP Black"/>
-                                                                <font key="NSFont" size="20" name="YSDisplay-Bold"/>
+                                                                <font key="NSFont" size="20" name="YSDisplay-Medium"/>
                                                                 <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                                             </attributes>
                                                         </fragment>
@@ -103,7 +103,7 @@
                                                     <attributedString key="attributedTitle">
                                                         <fragment content="Да">
                                                             <attributes>
-                                                                <font key="NSFont" size="20" name="YSDisplay-Bold"/>
+                                                                <font key="NSFont" size="20" name="YSDisplay-Medium"/>
                                                                 <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                                             </attributes>
                                                         </fragment>
