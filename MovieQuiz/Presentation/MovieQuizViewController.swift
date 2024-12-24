@@ -4,7 +4,7 @@ import UIKit
 final class MovieQuizViewController: UIViewController {
     // MARK: - Lifecycle
     
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var questionLabel: UILabel!
     @IBOutlet weak private var yesButton: UIButton!
     @IBOutlet weak private var noButton: UIButton!
@@ -13,8 +13,8 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
-        show(quiz: convert(question: questions[currentQuestionIndex]))
         
+        show(quiz: convert(question: questions[currentQuestionIndex]))
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
