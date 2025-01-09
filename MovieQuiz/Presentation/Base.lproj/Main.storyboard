@@ -53,7 +53,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Wv9-8s-svp">
                                         <rect key="frame" x="0.0" y="764" width="374" height="60"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bHP-qo-lUt" userLabel="No button">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bHP-qo-lUt" userLabel="No button">
                                                 <rect key="frame" x="0.0" y="0.0" width="177" height="60"/>
                                                 <rect key="contentStretch" x="1" y="0.0" width="1" height="1"/>
                                                 <constraints>
@@ -65,8 +65,7 @@
                                                     <attributedString key="attributedTitle">
                                                         <fragment content="Нет">
                                                             <attributes>
-                                                                <color key="NSColor" name="YP Black"/>
-                                                                <font key="NSFont" size="20" name="YSDisplay-Bold"/>
+                                                                <font key="NSFont" size="20" name="YSDisplay-Medium"/>
                                                             </attributes>
                                                         </fragment>
                                                     </attributedString>
@@ -76,6 +75,7 @@
                                                         <color key="backgroundColor" name="YP White"/>
                                                     </backgroundConfiguration>
                                                     <fontDescription key="titleFontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
+                                                    <directionalEdgeInsets key="contentInsets" top="0.0" leading="0.0" bottom="0.0" trailing="0.0"/>
                                                 </buttonConfiguration>
                                                 <connections>
                                                     <action selector="noButtonClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Gc6-vV-kdc"/>
