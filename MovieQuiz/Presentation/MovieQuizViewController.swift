@@ -1,7 +1,7 @@
 import UIKit
 
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     // MARK: - Lifecycle
     
     @IBOutlet weak private var imageView: UIImageView!
@@ -10,17 +10,29 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var counterLabel: UILabel!
     
-    
+    lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewControler: self)
+    private var currentQuestionIndex: Int = 0
+    private var correctAnswers: Int = 0
+    private var gamesPlayed: Int = 0
+    private let questionAmount: Int = 10
+    private var questionFactory: QuestionFactoryProtocol?
+    private var currentQuestion: QuizQuestion?
+    private var statisticService: StatisticServiceProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
+        
+        UserDefaults.standard.set(true, forKey: "viewDidLoad") 
+        print(Bundle.main.bundlePath)
+        print(NSHomeDirectory())
+        
         let questionFactory = QuestionFactory()
-       // questionFactory = QuestionFactory(delegate: self)
         questionFactory.delegate = self
         self.questionFactory = questionFactory
-        
         questionFactory.requestNextQuestion()
+        
+        statisticService = StatisticService()
     }
     
     // MARK:- QuestionFactoryDelegate
@@ -33,6 +45,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             self?.show(quiz: viewModel)
         }
     }
+    
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         enableAndDisableButtonsSwitcher()
@@ -53,19 +66,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
     }
     
-    private var currentQuestionIndex: Int = 0
-    private var correctAnswers: Int = 0
-    private var gamesPlayed: Int = 0
-    private var bestScore: Int = 0
-    private var averageScore: Double = 0
-    private var averageScoreToString: String = ""
-    private var summaryOfCorrectAnswers: Int = 0
-    private var dateFormatter = DateFormatter()
-    private var timeOfRecord: String = ""
-    
-    private let questionAmount: Int = 10
-    private var questionFactory: QuestionFactoryProtocol?
-    private var currentQuestion: QuizQuestion?
     
     
     private func convert(question: QuizQuestion) -> QuizStepViewModel {
@@ -83,27 +83,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         counterLabel.text = step.questionNumber
     }
     
-    /*private func show(quiz result: QuizResultsViewModel){
-        let alert = UIAlertController(title: result.title,
-                                      message: result.text,
-                                      preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: result.buttonText,
-                                   style: .default) {[weak self] _ in
-            guard let self else {return}
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-            
-            //self.questionFactory!.requestNextQuestion()
-            
-            guard let questionFactory = self.questionFactory else {return}
-            questionFactory.requestNextQuestion()
-            //self.show(quiz: self.convert(question: self.questions[self.currentQuestionIndex]))
-        }
-        alert.addAction(action)
-        self.present(alert, animated: true)
-    }*/
-    
     private func showAnswerResult(isCorrect: Bool){
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
@@ -120,25 +99,27 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func showNextQuestionOrResults(){
         if currentQuestionIndex == questionAmount - 1 {
-            statCalculator()
-            
-            show(quiz: QuizResultsViewModel(
-                title: "Этот раунд окончен",
-                text:
-                "Ваш реультат: \(correctAnswers)/10" +
-                "\n Колличество сыгранных квизов: \(gamesPlayed)" +
-                "\n Рекорд: \(bestScore) \(timeOfRecord)" +
-                "\n Средняя точность  \(averageScoreToString) %",
-                buttonText: "Сыграть ещё раз")
-            )
+            guard let statisticService else {return}
+            let massageForAlert =
+            statisticService.store(gameTry: GameResult(correct: correctAnswers,
+                                                        total: 10,
+                                                        date: Date()))
+            alertPresenter.alertCreate(quiz: AlertModel(
+            title: "Этот раунд окончен",
+                message: massageForAlert,
+                buttonText: "Сыграть ещё раз",
+                completion: { [weak self] in
+                    guard let self else {return}
+                    guard let questionFactory = self.questionFactory else{ return}
+                    questionFactory.requestNextQuestion()} ))
+            currentQuestionIndex = 0
+            correctAnswers = 0
             
         }
         else {
             currentQuestionIndex += 1
-            //questionFactory!.requestNextQuestion()
             guard let questionFactory = questionFactory else {return}
             questionFactory.requestNextQuestion()
-            //show(quiz: convert(question: questions[currentQuestionIndex]))
         }
     }
     
@@ -148,23 +129,5 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             noButton.isEnabled = false}
         else{yesButton.isEnabled = true
             noButton.isEnabled = true}
-    }
-    
-    private func statCalculator(){
-        gamesPlayed += 1
-        summaryOfCorrectAnswers += correctAnswers
-        
-        if bestScore < correctAnswers{
-            bestScore = correctAnswers
-            timeOfRecord = currentTime()
-        }
-        
-        averageScore = Double(summaryOfCorrectAnswers) * 10 / Double(gamesPlayed)
-        averageScoreToString = String(format: "%.2f", averageScore)
-    }
-    
-    private func currentTime() -> String {
-        dateFormatter.dateFormat = "dd.MM.yy HH:mm"
-        return dateFormatter.string(from: Date())
-    }
+    } 
 }
