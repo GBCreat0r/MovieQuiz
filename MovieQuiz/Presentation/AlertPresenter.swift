@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-class AlertPresenter: AlertPresenterProtocol {
+final class AlertPresenter: AlertPresenterProtocol {
     weak var viewControler: UIViewController?
     func alertCreate(quiz model: AlertModel){
         let alert = UIAlertController(title: model.title,

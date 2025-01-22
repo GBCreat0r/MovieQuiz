@@ -14,5 +14,5 @@ struct GameResult {
     
     func isBetterThan(_ another: GameResult) -> Bool {
         correct > another.correct
-        }
+    }
 }

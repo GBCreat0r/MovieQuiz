@@ -10,7 +10,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var counterLabel: UILabel!
     
-    lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewControler: self)
+    private lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewControler: self)
     private var currentQuestionIndex: Int = 0
     private var correctAnswers: Int = 0
     private var gamesPlayed: Int = 0
@@ -23,7 +23,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
         
-        UserDefaults.standard.set(true, forKey: "viewDidLoad") 
+        UserDefaults.standard.set(true, forKey: "viewDidLoad")
         print(Bundle.main.bundlePath)
         print(NSHomeDirectory())
         
@@ -46,27 +46,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         }
     }
     
-    
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        enableAndDisableButtonsSwitcher()
-        
-        guard let  currentQuestion else{return}
-        if currentQuestion.correctAnswer == true {
-            
-            showAnswerResult(isCorrect: true)}
-        else{showAnswerResult(isCorrect: false)}
+        enableAndDisableButtonsSwitcher(isEnable: false)
+        guard let currentQuestion else { return }
+        showAnswerResult(isCorrect: currentQuestion.correctAnswer == true)
     }
     @IBAction private func noButtonClicked(_ sender: UIButton) {
-        enableAndDisableButtonsSwitcher()
-        
-        guard let currentQuestion else{return}
-        if currentQuestion.correctAnswer == false {
-            showAnswerResult(isCorrect: true)}
-        else{showAnswerResult(isCorrect: false)}
-        
+        enableAndDisableButtonsSwitcher(isEnable: false)
+        guard let currentQuestion else { return }
+        showAnswerResult(isCorrect: currentQuestion.correctAnswer == false)
     }
-    
-    
     
     private func convert(question: QuizQuestion) -> QuizStepViewModel {
         let quizStepViewModel = QuizStepViewModel(
@@ -90,44 +79,41 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         if isCorrect {correctAnswers += 1}
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self else {return}
+            guard let self else { return }
             self.imageView.layer.borderWidth = 0
-            self.enableAndDisableButtonsSwitcher()
+            self.enableAndDisableButtonsSwitcher(isEnable: true)
             self.showNextQuestionOrResults()
         }
     }
     
     private func showNextQuestionOrResults(){
         if currentQuestionIndex == questionAmount - 1 {
-            guard let statisticService else {return}
+            guard let statisticService else { return }
             let massageForAlert =
             statisticService.store(gameTry: GameResult(correct: correctAnswers,
-                                                        total: 10,
-                                                        date: Date()))
+                                                       total: 10,
+                                                       date: Date()))
             alertPresenter.alertCreate(quiz: AlertModel(
-            title: "Этот раунд окончен",
+                title: "Этот раунд окончен!",
                 message: massageForAlert,
                 buttonText: "Сыграть ещё раз",
                 completion: { [weak self] in
-                    guard let self else {return}
-                    guard let questionFactory = self.questionFactory else{ return}
-                    questionFactory.requestNextQuestion()} ))
+                    guard let self else { return }
+                    guard let questionFactory = self.questionFactory
+                    else { return }
+                    questionFactory.requestNextQuestion() }))
             currentQuestionIndex = 0
             correctAnswers = 0
-            
         }
         else {
             currentQuestionIndex += 1
-            guard let questionFactory = questionFactory else {return}
+            guard let questionFactory = questionFactory else { return }
             questionFactory.requestNextQuestion()
         }
     }
     
-    private func enableAndDisableButtonsSwitcher(){
-        if yesButton.isEnabled{
-            yesButton.isEnabled = false
-            noButton.isEnabled = false}
-        else{yesButton.isEnabled = true
-            noButton.isEnabled = true}
-    } 
+    private func enableAndDisableButtonsSwitcher(isEnable: Bool){
+        noButton.isEnabled = isEnable
+        yesButton.isEnabled = isEnable
+    }
 }

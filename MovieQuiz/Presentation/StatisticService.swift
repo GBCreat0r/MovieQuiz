@@ -23,19 +23,15 @@ final class StatisticService: StatisticServiceProtocol {
     }
     
     var gameCount: Int {
-        get {
-            return storage.integer(forKey: Keys.gameCount.rawValue)
-        }
-        set {
-            storage.set(newValue, forKey: Keys.gameCount.rawValue)
-        }
+        get { storage.integer(forKey: Keys.gameCount.rawValue) }
+        set { storage.set(newValue, forKey: Keys.gameCount.rawValue) }
     }
     var bestGame: GameResult {
-        get { guard let now = storage.object(forKey: Keys.date.rawValue) as? Date else {return GameResult(correct: 0, total: 0, date: Date())}
-  
-            return GameResult(correct: storage.integer(forKey: Keys.correct.rawValue),
-                              total: storage.integer(forKey: Keys.total.rawValue),
-                              date: now)
+        get {
+            GameResult(correct:
+                        storage.integer(forKey: Keys.correct.rawValue),
+                       total: storage.integer(forKey: Keys.total.rawValue),
+                       date: storage.object(forKey: Keys.date.rawValue) as? Date ?? Date())
         }
         set {
             storage.set(newValue.correct, forKey: Keys.correct.rawValue)
@@ -45,18 +41,13 @@ final class StatisticService: StatisticServiceProtocol {
     }
     
     var totalAccuracy: Double {
-        get {
-            return storage.double(forKey: Keys.totalAccuracy.rawValue)
-        }
-        set {
-            return storage.set(newValue, forKey: Keys.totalAccuracy.rawValue)
-        }
+        get { storage.double(forKey: Keys.totalAccuracy.rawValue) }
+        set { storage.set(newValue, forKey: Keys.totalAccuracy.rawValue) }
     }
 
     func store(gameTry: GameResult) -> String{
         gameCount += 1
-        if gameTry.isBetterThan(bestGame)
-         {bestGame = gameTry}
+        if gameTry.isBetterThan(bestGame) { bestGame = gameTry }
         let avarage = (totalAccuracy * (Double(gameCount) - 1) + (Double(gameTry.correct) * 10)) / Double(gameCount)
         totalAccuracy = avarage
         
@@ -67,8 +58,8 @@ final class StatisticService: StatisticServiceProtocol {
         
         var massage: String
         massage = "Ваш реультат: \(gameTry.correct)/10" +
-        "\n Колличество сыгранных квизов: \(gameCount)" +
-        "\n Рекорд: \(bestGame.correct) \(formattedDate)" +
+        "\n Количество сыгранных квизов: \(gameCount)" +
+        "\n Рекорд: \(bestGame.correct)/10 (\(formattedDate))" +
         "\n Средняя точность  \(averageScoreToString) %"
         return massage
     }
