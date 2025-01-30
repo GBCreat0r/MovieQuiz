@@ -4,6 +4,7 @@ import UIKit
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     // MARK: - Lifecycle
     
+    @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var questionLabel: UILabel!
     @IBOutlet weak private var yesButton: UIButton!
@@ -27,12 +28,17 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         print(Bundle.main.bundlePath)
         print(NSHomeDirectory())
         
-        let questionFactory = QuestionFactory()
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        /*let questionFactory = QuestionFactory()
         questionFactory.delegate = self
         self.questionFactory = questionFactory
-        questionFactory.requestNextQuestion()
+        questionFactory.loadData()
+        showLoadingIndicator()
+        questionFactory.requestNextQuestion()*/
         
         statisticService = StatisticService()
+        showLoadingIndicator()
+        questionFactory?.loadData()
     }
     
     // MARK:- QuestionFactoryDelegate
@@ -59,7 +65,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     
     private func convert(question: QuizQuestion) -> QuizStepViewModel {
         let quizStepViewModel = QuizStepViewModel(
-            image : UIImage(named: question.image) ?? UIImage(),
+            image : UIImage(data: question.image) ?? UIImage(),
+                //UIImage(named: question.image) ?? UIImage(),
             question: question.text,
             questionNumber: "\(currentQuestionIndex+1)/\(questionAmount)"
         )
@@ -115,5 +122,32 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     private func enableAndDisableButtonsSwitcher(isEnable: Bool){
         noButton.isEnabled = isEnable
         yesButton.isEnabled = isEnable
+    }
+    
+    private func showLoadingIndicator(){
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating( )
+    }
+    
+    private func showNetworkError(message: String){
+        let model = AlertModel(title: "Ошибка",
+                               message: message,
+                               buttonText:"retry") { [weak self] in
+            guard let self else { return }
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            self.questionFactory?.requestNextQuestion()
+        }
+        alertPresenter.alertCreate(quiz: model)
+    }
+    
+    func didLoadDataFromServer() {
+        activityIndicator.isHidden = true
+        questionFactory?.requestNextQuestion()
+        
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
     }
 }
