@@ -83,9 +83,10 @@ final class QuestionFactory: QuestionFactoryProtocol {
                 print ("Failed to load image")
             }
             let rating = Float(movie.rating) ?? 0
-        // как закончишь добавь рандом оценку от 5 до 9
-            let text = "Рейтинг этого фильма больше чем 7?"
-            let correctAnswer = rating > 7
+            let probablyRating: Float = Float.random(in: 7.5...9)
+            let stringProbablyRating = String(format: "%.1f", probablyRating)
+            let text = "Рейтинг этого фильма больше чем \(stringProbablyRating)?"
+            let correctAnswer = rating > probablyRating
             
             let question = QuizQuestion(image: imageData,
                                         text: text,

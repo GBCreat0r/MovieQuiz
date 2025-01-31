@@ -28,14 +28,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         print(Bundle.main.bundlePath)
         print(NSHomeDirectory())
         
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
-        /*let questionFactory = QuestionFactory()
-        questionFactory.delegate = self
-        self.questionFactory = questionFactory
-        questionFactory.loadData()
-        showLoadingIndicator()
-        questionFactory.requestNextQuestion()*/
-        
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(),
+                                          delegate: self)
         statisticService = StatisticService()
         showLoadingIndicator()
         questionFactory?.loadData()
@@ -66,7 +60,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     private func convert(question: QuizQuestion) -> QuizStepViewModel {
         let quizStepViewModel = QuizStepViewModel(
             image : UIImage(data: question.image) ?? UIImage(),
-                //UIImage(named: question.image) ?? UIImage(),
             question: question.text,
             questionNumber: "\(currentQuestionIndex+1)/\(questionAmount)"
         )
@@ -77,6 +70,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         imageView.image = step.image
         questionLabel.text = step.question
         counterLabel.text = step.questionNumber
+        self.enableAndDisableButtonsSwitcher(isEnable: true)
+        self.imageView.layer.borderWidth = 0
     }
     
     private func showAnswerResult(isCorrect: Bool){
@@ -87,8 +82,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self else { return }
-            self.imageView.layer.borderWidth = 0
-            self.enableAndDisableButtonsSwitcher(isEnable: true)
             self.showNextQuestionOrResults()
         }
     }
