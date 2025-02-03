@@ -31,6 +31,4 @@ struct MostPopularMovie: Codable {
         case rating = "imDbRating"
         case imageURL = "image"
     }
-    
-    
 }

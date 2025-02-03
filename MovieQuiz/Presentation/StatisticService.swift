@@ -12,7 +12,6 @@ final class StatisticService: StatisticServiceProtocol {
     weak var viewController: UIViewController?
     private let storage: UserDefaults = .standard
     
-    
     enum Keys: String {
         case correct = "correct"
         case total = "total"
@@ -44,7 +43,7 @@ final class StatisticService: StatisticServiceProtocol {
         get { storage.double(forKey: Keys.totalAccuracy.rawValue) }
         set { storage.set(newValue, forKey: Keys.totalAccuracy.rawValue) }
     }
-
+    
     func store(gameTry: GameResult) -> String{
         gameCount += 1
         if gameTry.isBetterThan(bestGame) { bestGame = gameTry }
