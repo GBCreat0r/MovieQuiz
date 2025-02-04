@@ -11,7 +11,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var counterLabel: UILabel!
     
-    private lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewControler: self)
+    private lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewController: self)
     private var currentQuestionIndex: Int = 0
     private var correctAnswers: Int = 0
     private var gamesPlayed: Int = 0
@@ -59,7 +59,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     
     private func convert(question: QuizQuestion) -> QuizStepViewModel {
         let quizStepViewModel = QuizStepViewModel(
-            image : UIImage(data: question.image) ?? UIImage(),
+            image : UIImage(data: question.imageData) ?? UIImage(),
             question: question.text,
             questionNumber: "\(currentQuestionIndex+1)/\(questionAmount)"
         )

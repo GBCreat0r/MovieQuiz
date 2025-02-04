@@ -87,7 +87,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
             let text = "Рейтинг этого фильма больше чем \(stringProbablyRating)?"
             let correctAnswer = rating > probablyRating
             
-            let question = QuizQuestion(image: imageData,
+            let question = QuizQuestion(imageData: imageData,
                                         text: text,
                                         correctAnswer: correctAnswer)
             DispatchQueue.main.async { [weak self] in

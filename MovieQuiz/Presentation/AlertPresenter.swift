@@ -10,7 +10,7 @@ import UIKit
 
 
 final class AlertPresenter: AlertPresenterProtocol {
-    weak var viewControler: UIViewController?
+    weak var viewController: UIViewController?
     func alertCreate(quiz model: AlertModel){
         let alert = UIAlertController(title: model.title,
                                       message: model.message,
@@ -21,10 +21,10 @@ final class AlertPresenter: AlertPresenterProtocol {
             model.completion()
         }
         alert.addAction(action)
-        viewControler?.present(alert, animated: true)
+        viewController?.present(alert, animated: true)
     }
     
-    init(viewControler: UIViewController? = nil) {
-        self.viewControler = viewControler
+    init(viewController: UIViewController? = nil) {
+        self.viewController = viewController
     }
 }

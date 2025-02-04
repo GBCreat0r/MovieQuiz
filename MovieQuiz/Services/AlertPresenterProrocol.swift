@@ -1,5 +1,5 @@
 //
-//  AlertPresenterProrocol.swift
+// 
 //  MovieQuiz
 //
 //  Created by semrumyantsev on 15.01.2025.
