@@ -12,13 +12,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     @IBOutlet weak private var counterLabel: UILabel!
     
     private lazy var alertPresenter: AlertPresenterProtocol = AlertPresenter(viewController: self)
-    private var currentQuestionIndex: Int = 0
+    //private var currentQuestionIndex: Int = 0
     private var correctAnswers: Int = 0
     private var gamesPlayed: Int = 0
-    private let questionAmount: Int = 10
+    //private let questionAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var statisticService: StatisticServiceProtocol?
+    
+    private var presenter = MovieQuizPresenter()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +42,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question else { return }
         currentQuestion = question
-        let viewModel = convert(question: question)
+        let viewModel = presenter.convert(question: question)
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
@@ -57,14 +59,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         showAnswerResult(isCorrect: currentQuestion.correctAnswer == false)
     }
     
-    private func convert(question: QuizQuestion) -> QuizStepViewModel {
+    /*private func convert(question: QuizQuestion) -> QuizStepViewModel {
         let quizStepViewModel = QuizStepViewModel(
             image : UIImage(data: question.imageData) ?? UIImage(),
             question: question.text,
             questionNumber: "\(currentQuestionIndex+1)/\(questionAmount)"
         )
         return quizStepViewModel
-    }
+    }*/
     
     private func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
@@ -87,7 +89,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     }
     
     private func showNextQuestionOrResults(){
-        if currentQuestionIndex == questionAmount - 1 {
+        if presenter.isLastQuestion() {
             guard let statisticService else { return }
             let massageForAlert =
             statisticService.store(gameTry: GameResult(correct: correctAnswers,
@@ -102,11 +104,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
                     guard let questionFactory = self.questionFactory
                     else { return }
                     questionFactory.requestNextQuestion() }))
-            currentQuestionIndex = 0
+            presenter.resetQuestionIndex()
             correctAnswers = 0
         }
         else {
-            currentQuestionIndex += 1
+            presenter.switchToNextQuestion()
             guard let questionFactory = questionFactory else { return }
             questionFactory.requestNextQuestion()
         }
@@ -127,7 +129,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
                                message: message,
                                buttonText:"Попробовать ещё раз") { [weak self] in
             guard let self else { return }
-            self.currentQuestionIndex = 0
+            self.presenter.resetQuestionIndex()
             self.correctAnswers = 0
             self.questionFactory?.loadData()
         }
