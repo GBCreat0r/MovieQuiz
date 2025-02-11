@@ -45,7 +45,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         currentQuestionIndex += 1
     }
     
-    
     func convert(question: QuizQuestion) -> QuizStepViewModel {
         let quizStepViewModel = QuizStepViewModel(
             image : UIImage(data: question.imageData) ?? UIImage(),
@@ -91,8 +90,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     func showAnswerResult(isCorrect: Bool){
         viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
-        if isCorrect {switchToNextQuestion()}
-        
+        if isCorrect {correctAnswers += 1 }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self else { return }
             self.showNextQuestionOrResults()
