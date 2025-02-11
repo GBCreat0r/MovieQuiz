@@ -25,6 +25,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
+        presenter.viewController = self
         
         UserDefaults.standard.set(true, forKey: "viewDidLoad")
         print(Bundle.main.bundlePath)
@@ -51,12 +52,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         enableAndDisableButtonsSwitcher(isEnable: false)
         guard let currentQuestion else { return }
-        showAnswerResult(isCorrect: currentQuestion.correctAnswer == true)
+        presenter.currentQuestion = currentQuestion
+        presenter.yesButtonClicked()
     }
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         enableAndDisableButtonsSwitcher(isEnable: false)
         guard let currentQuestion else { return }
-        showAnswerResult(isCorrect: currentQuestion.correctAnswer == false)
+        presenter.currentQuestion = currentQuestion
+        presenter.noButtonClicked()
     }
     
     /*private func convert(question: QuizQuestion) -> QuizStepViewModel {
@@ -76,7 +79,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         self.imageView.layer.borderWidth = 0
     }
     
-    private func showAnswerResult(isCorrect: Bool){
+    func showAnswerResult(isCorrect: Bool){
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
