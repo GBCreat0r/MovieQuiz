@@ -1,14 +1,14 @@
 import UIKit
 
 
-final class MovieQuizViewController: UIViewController{
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var questionLabel: UILabel!
     @IBOutlet weak private var yesButton: UIButton!
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var counterLabel: UILabel!
-
+    
     private var presenter: MovieQuizPresenter!
     
     //MARK: - Lifecycle
@@ -16,9 +16,9 @@ final class MovieQuizViewController: UIViewController{
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
         
-       /* UserDefaults.standard.set(true, forKey: "viewDidLoad")
-        print(Bundle.main.bundlePath)
-        print(NSHomeDirectory()) */
+        /* UserDefaults.standard.set(true, forKey: "viewDidLoad")
+         print(Bundle.main.bundlePath)
+         print(NSHomeDirectory()) */
         
         presenter = MovieQuizPresenter(viewController: self)
     }
@@ -49,8 +49,8 @@ final class MovieQuizViewController: UIViewController{
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
     }
- 
-    private func enableAndDisableButtonsSwitcher(isEnable: Bool){
+    
+    func enableAndDisableButtonsSwitcher(isEnable: Bool){
         noButton.isEnabled = isEnable
         yesButton.isEnabled = isEnable
     }
@@ -61,8 +61,8 @@ final class MovieQuizViewController: UIViewController{
     }
     
     func hideLoadingIndicator() {
-            activityIndicator.isHidden = true
-        }
+        activityIndicator.isHidden = true
+    }
     
     func showNetworkError(message: String){
         let model = AlertModel(title: "Ошибка",

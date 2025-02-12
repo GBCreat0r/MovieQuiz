@@ -30,4 +30,3 @@ final class AlertPresenter: AlertPresenterProtocol {
         self.viewController = viewController
     }
 }
-//SimulatorKil.SimDisplayRenderableView

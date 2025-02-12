@@ -22,7 +22,7 @@ class MovieLoaderTests: XCTestCase {
             // Then
             switch result {
             case .success(let movies):
-           
+                
                 XCTAssertEqual(movies.items.count, 2)
                 expectation.fulfill()
             case .failure(_):
@@ -68,8 +68,8 @@ struct StubNetworkClient: NetworkRouting {
             handler(.success(expectedResponse))
         }
     }
-        private var expectedResponse: Data {
-            """
+    private var expectedResponse: Data {
+                    """
                     {
                        "errorMessage" : "",
                        "items" : [

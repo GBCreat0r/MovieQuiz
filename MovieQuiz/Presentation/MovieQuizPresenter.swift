@@ -15,20 +15,21 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     
     private var currentQuestion: QuizQuestion?
-    private weak var viewController: MovieQuizViewController?
+    private weak var viewController: MovieQuizViewControllerProtocol?
     private let statisticService: StatisticServiceProtocol!
     private var questionFactory: QuestionFactoryProtocol?
     private var alertPresenter: AlertPresenterProtocol?
     
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewControllerProtocol) {
+        
         self.viewController = viewController
         
         statisticService = StatisticService()
-
+        
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         questionFactory?.loadData()
         viewController.showLoadingIndicator()
-        alertPresenter = AlertPresenter(viewController: self.viewController)
+        alertPresenter = AlertPresenter(viewController: self.viewController as? UIViewController)
     }
     
     func isLastQuestion() -> Bool {
@@ -71,7 +72,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         if self.isLastQuestion() {
             guard let statisticService else { return }
             let massageForAlert =
-            statisticService.store(gameTry: GameResult(correct: correctAnswers,
+            statisticService.storeAndCreateMassage(gameTry: GameResult(correct: correctAnswers,
                                                        total: 10,
                                                        date: Date()))
             makeAlert(model: AlertModel(
@@ -89,6 +90,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             questionFactory.requestNextQuestion()
         }
     }
+    
     func showAnswerResult(isCorrect: Bool){
         viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
         if isCorrect {correctAnswers += 1 }
@@ -108,6 +110,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             self?.viewController?.show(quiz: viewModel)
         }
     }
+    
     func didLoadDataFromServer() {
         viewController?.hideLoadingIndicator()
         questionFactory?.requestNextQuestion()
