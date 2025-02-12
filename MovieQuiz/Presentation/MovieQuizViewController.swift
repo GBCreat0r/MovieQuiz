@@ -2,9 +2,7 @@ import UIKit
 
 
 final class MovieQuizViewController: UIViewController{
-    // MARK: - Lifecycle
-    
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var questionLabel: UILabel!
     @IBOutlet weak private var yesButton: UIButton!
@@ -13,19 +11,19 @@ final class MovieQuizViewController: UIViewController{
 
     private var presenter: MovieQuizPresenter!
     
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
         
-        
-        UserDefaults.standard.set(true, forKey: "viewDidLoad")
+       /* UserDefaults.standard.set(true, forKey: "viewDidLoad")
         print(Bundle.main.bundlePath)
-        print(NSHomeDirectory())
+        print(NSHomeDirectory()) */
         
         presenter = MovieQuizPresenter(viewController: self)
     }
     
-    
+    //MARK: - Actions
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         enableAndDisableButtonsSwitcher(isEnable: false)
@@ -36,6 +34,8 @@ final class MovieQuizViewController: UIViewController{
         presenter.noButtonClicked()
     }
     
+    //MARK: - Funcions
+    
     func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
         questionLabel.text = step.question
@@ -43,6 +43,7 @@ final class MovieQuizViewController: UIViewController{
         self.enableAndDisableButtonsSwitcher(isEnable: true)
         self.imageView.layer.borderWidth = 0
     }
+    
     func highlightImageBorder(isCorrectAnswer: Bool) {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
@@ -59,6 +60,10 @@ final class MovieQuizViewController: UIViewController{
         activityIndicator.startAnimating( )
     }
     
+    func hideLoadingIndicator() {
+            activityIndicator.isHidden = true
+        }
+    
     func showNetworkError(message: String){
         let model = AlertModel(title: "Ошибка",
                                message: message,
@@ -66,6 +71,6 @@ final class MovieQuizViewController: UIViewController{
             guard let self else { return }
             self.presenter.restartGame()
         }
-        presenter.alertPresenter?.alertCreate(quiz: model)
+        presenter.makeAlert(model: model)
     }
 }

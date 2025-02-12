@@ -10,15 +10,15 @@ import UIKit
 final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     private var correctAnswers: Int = 0
-    let questionAmount: Int = 10
+    private let questionAmount: Int = 10
     private var currentQuestionIndex: Int = 0
     
     
-    var currentQuestion: QuizQuestion?
-    weak var viewController: MovieQuizViewController?
-    let statisticService: StatisticServiceProtocol!
-    var questionFactory: QuestionFactoryProtocol?
-    var alertPresenter: AlertPresenterProtocol?
+    private var currentQuestion: QuizQuestion?
+    private weak var viewController: MovieQuizViewController?
+    private let statisticService: StatisticServiceProtocol!
+    private var questionFactory: QuestionFactoryProtocol?
+    private var alertPresenter: AlertPresenterProtocol?
     
     init(viewController: MovieQuizViewController) {
         self.viewController = viewController
@@ -63,6 +63,9 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         guard let currentQuestion else { return }
         showAnswerResult(isCorrect: currentQuestion.correctAnswer == false)
     }
+    func makeAlert(model: AlertModel) {
+        alertPresenter?.alertCreate(quiz: model)
+    }
     
     func showNextQuestionOrResults(){
         if self.isLastQuestion() {
@@ -71,16 +74,14 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             statisticService.store(gameTry: GameResult(correct: correctAnswers,
                                                        total: 10,
                                                        date: Date()))
-            alertPresenter?.alertCreate(quiz: AlertModel(
+            makeAlert(model: AlertModel(
                 title: "Этот раунд окончен!",
                 message: massageForAlert,
                 buttonText: "Сыграть ещё раз",
                 completion: { [weak self] in
                     guard let self else { return }
-                    guard let questionFactory = self.questionFactory
-                    else { return }
-                    questionFactory.requestNextQuestion() }))
-            restartGame()
+                    restartGame() }))
+            
         }
         else {
             self.switchToNextQuestion()
@@ -108,7 +109,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     func didLoadDataFromServer() {
-        viewController?.activityIndicator.isHidden = true
+        viewController?.hideLoadingIndicator()
         questionFactory?.requestNextQuestion()
     }
     
