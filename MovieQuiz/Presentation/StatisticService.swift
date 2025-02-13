@@ -5,7 +5,6 @@
 //  Created by semrumyantsev on 20.01.2025.
 //
 
-import Foundation
 import UIKit
 
 final class StatisticService: StatisticServiceProtocol {
@@ -44,11 +43,11 @@ final class StatisticService: StatisticServiceProtocol {
         set { storage.set(newValue, forKey: Keys.totalAccuracy.rawValue) }
     }
     
-    func store(gameTry: GameResult) -> String{
+    func storeAndCreateMassage(gameTry: GameResult) -> String{
         gameCount += 1
         if gameTry.isBetterThan(bestGame) { bestGame = gameTry }
-        let avarage = (totalAccuracy * (Double(gameCount) - 1) + (Double(gameTry.correct) * 10)) / Double(gameCount)
-        totalAccuracy = avarage
+        let average = (totalAccuracy * (Double(gameCount) - 1) + (Double(gameTry.correct) * 10)) / Double(gameCount)
+        totalAccuracy = average
         
         let averageScoreToString = String(format: "%.2f",totalAccuracy)
         let dateFormatter = DateFormatter()
