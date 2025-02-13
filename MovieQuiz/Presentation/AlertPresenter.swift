@@ -5,9 +5,7 @@
 //  Created by semrumyantsev on 14.01.2025.
 //
 
-import Foundation
 import UIKit
-
 
 final class AlertPresenter: AlertPresenterProtocol {
     weak var viewController: UIViewController?

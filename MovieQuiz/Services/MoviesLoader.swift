@@ -19,7 +19,6 @@ struct MoviesLoader: MoviesLoading {
         self.networkClient = networkClient
     }
     
-    
     //MARK: URL
     private var mostPopularMoviesURL: URL {
         guard let url = URL(string: "https://tv-api.com/en/API/Top250Movies/k_zcuw1ytf") else {
@@ -27,7 +26,6 @@ struct MoviesLoader: MoviesLoading {
         }
         return url
     }
-    
     
     func loadMovies(handler: @escaping (Result<MostPopularMovies, Error>) -> Void) {
         networkClient.fetch(url: mostPopularMoviesURL) { result in

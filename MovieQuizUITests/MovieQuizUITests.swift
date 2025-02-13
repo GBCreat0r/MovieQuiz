@@ -7,7 +7,7 @@
 
 import XCTest
 
-class MovieQuizUITests: XCTestCase {
+final class MovieQuizUITests: XCTestCase {
     
     var app: XCUIApplication!
     
@@ -23,18 +23,8 @@ class MovieQuizUITests: XCTestCase {
         try super.tearDownWithError()
         app.terminate()
         app = nil
-        
     }
-    
-    @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-        
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-    
+
     func testYesButton() {
         sleep(3)
         let firstPoster = app.images["Poster"]
@@ -45,7 +35,6 @@ class MovieQuizUITests: XCTestCase {
         
         let secondPosterData = secondPoster.screenshot().pngRepresentation
         XCTAssertNotEqual(firstPosterData, secondPosterData)
-        
     }
     
     func testRightIndex() {
@@ -92,5 +81,4 @@ class MovieQuizUITests: XCTestCase {
         let textLabel = app.staticTexts["Index"].label
         XCTAssertEqual(textLabel, "1/10")
     }
-    
 }

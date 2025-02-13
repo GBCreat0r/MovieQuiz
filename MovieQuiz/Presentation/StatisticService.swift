@@ -5,7 +5,6 @@
 //  Created by semrumyantsev on 20.01.2025.
 //
 
-import Foundation
 import UIKit
 
 final class StatisticService: StatisticServiceProtocol {

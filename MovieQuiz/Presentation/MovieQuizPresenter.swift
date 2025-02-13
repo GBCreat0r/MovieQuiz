@@ -13,10 +13,9 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private let questionAmount: Int = 10
     private var currentQuestionIndex: Int = 0
     
-    
     private var currentQuestion: QuizQuestion?
     private weak var viewController: MovieQuizViewControllerProtocol?
-    private let statisticService: StatisticServiceProtocol!
+    private let statisticService: StatisticServiceProtocol?
     private var questionFactory: QuestionFactoryProtocol?
     private var alertPresenter: AlertPresenterProtocol?
     
@@ -55,15 +54,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         return quizStepViewModel
     }
     
-    func yesButtonClicked() {
+    func answerButtonClicked(isYes: Bool) {
         guard let currentQuestion else { return }
-        showAnswerResult(isCorrect: currentQuestion.correctAnswer == true)
+        showAnswerResult(isCorrect: currentQuestion.correctAnswer == isYes)
     }
     
-    func noButtonClicked() {
-        guard let currentQuestion else { return }
-        showAnswerResult(isCorrect: currentQuestion.correctAnswer == false)
-    }
     func makeAlert(model: AlertModel) {
         alertPresenter?.alertCreate(quiz: model)
     }
@@ -83,8 +78,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
                     guard let self else { return }
                     restartGame() }))
             
-        }
-        else {
+        } else {
             self.switchToNextQuestion()
             guard let questionFactory = questionFactory else { return }
             questionFactory.requestNextQuestion()

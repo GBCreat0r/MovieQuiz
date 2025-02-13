@@ -1,6 +1,5 @@
 import UIKit
 
-
 final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     @IBOutlet weak private var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak private var imageView: UIImageView!
@@ -9,17 +8,12 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var counterLabel: UILabel!
     
-    private var presenter: MovieQuizPresenter!
+    private var presenter: MovieQuizPresenter?
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.layer.cornerRadius = 20
-        
-        /* UserDefaults.standard.set(true, forKey: "viewDidLoad")
-         print(Bundle.main.bundlePath)
-         print(NSHomeDirectory()) */
-        
         presenter = MovieQuizPresenter(viewController: self)
     }
     
@@ -27,11 +21,11 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         enableAndDisableButtonsSwitcher(isEnable: false)
-        presenter.yesButtonClicked()
+        presenter?.answerButtonClicked(isYes: true)
     }
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         enableAndDisableButtonsSwitcher(isEnable: false)
-        presenter.noButtonClicked()
+        presenter?.answerButtonClicked(isYes: false)
     }
     
     //MARK: - Funcions
@@ -69,8 +63,8 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
                                message: message,
                                buttonText:"Попробовать ещё раз") { [weak self] in
             guard let self else { return }
-            self.presenter.restartGame()
+            self.presenter?.restartGame()
         }
-        presenter.makeAlert(model: model)
+        presenter?.makeAlert(model: model)
     }
 }
